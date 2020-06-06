@@ -68,25 +68,6 @@ def subfiles(ext,fold):
                 l=[l4,l1,l2,l3]
         return l  
 
-'''def build_model():
-	model = Sequential()
-	model.add(Conv2D(64, (3,3), padding='same', activation = 'relu', input_shape=(100,39,1)))
-	model.add(MaxPooling2D(pool_size = 3))
-	model.add(Conv2D(64, (3,3), padding='same', activation = 'relu'))
-	model.add(BatchNormalization())
-	model.add(Conv2D(64, (3,3), padding='same', activation = 'relu'))
-	model.add(Conv2D(128, (3,3), padding='same', activation = 'relu'))
-	model.add(MaxPooling2D(pool_size = 2))
-	model.add(Flatten())
-	model.add(Dense(64,activation = 'relu'))
-	model.add(BatchNormalization())
-	model.add(Dropout(0.20))
-	model.add(Dense(32,activation = 'relu'))
-	model.add(BatchNormalization())
-	model.add(Dropout(0.20))
-	model.add(Dense(1,activation ='relu'))
-	return model'''
-	
 def phoneme_rate(y,st,et):
       phn=pd.read_csv(Y_dir+y+'.phn',delimiter='\t',header=None)
       phoneme_list=[]
@@ -185,8 +166,8 @@ def build_model():
 model = build_model()
 model.summary()
 
-X_dir='/home2/data/jyothi/Data/timit_data/wav/'
-Y_dir='/home2/data/jyothi/Data/timit_data/phn/'
+X_dir='./wav/' ## wavefiles directory
+Y_dir='./phn/' ## phonetic transcriptions files directory
 
 Mfccfiles=sorted(os.listdir(X_dir))
 phnf=sorted(os.listdir(Y_dir))
@@ -214,9 +195,6 @@ for fold in range(0,4): #  no. of folds
                                 y = preemphasis(sig)
                                 y = (y-np.mean(y))/np.std(y)
                                 y_framed = librosa.util.frame(y,window_size, Hop_len).astype(np.float64).T
-				#[aW,bW]=y_framed.shape
-				#tEnd=np.min([aW,aE])
-				#WavFiles.append(y_framed[np.newaxis, :,:,np.newaxis])
                                 co=co+1 
                                 #se=range(0,MFCC_G.shape[0],50)
                                 se = range(0,y_framed.shape[0],50)
@@ -299,7 +277,7 @@ for fold in range(0,4): #  no. of folds
         Y_test=np.array(Y_test)
         
         
-        fName1 = '/home2/data/jyothi/models/raw_waveform/seen_timit/'
+        fName1 = './seen_timit/' ## path to save models
         try:
              os.mkdir(fName1)
         except OSError as error:
