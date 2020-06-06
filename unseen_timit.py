@@ -19,9 +19,6 @@ from keras.layers.normalization import BatchNormalization#from keras.layers impo
 import librosa
 from keras.callbacks import ModelCheckpoint 
 from keras.layers.wrappers import Bidirectional
-#from keras.utils.generic_utils import Progbar
-
-#from keras.utils.visualize_util import plot
 from keras.layers import   MaxPooling2D, Flatten,Reshape,Conv2D,Dropout
 from keras.layers import Input, Dense, TimeDistributed, GlobalAveragePooling1D
 from keras.preprocessing.sequence import pad_sequences
@@ -32,13 +29,10 @@ config = tf.ConfigProto()
 config.gpu_options.allow_growth = True
 set_session(tf.Session(config=config))
 
-
-
 def directory(extension):
  list_dir = []
  count = 0
  for file in Mfccfiles:
-    
     if (file.find(extension)!=-1) and (count!=8): # eg: '.txt'
       count += 1
       list_dir.append(file)
@@ -118,8 +112,6 @@ def phoneme_rate(y,st,et):
 
 NoUnits=256
 BatchSize=16
-#n_mfcc=39
-#inputDim=n_mfcc
 
 Wav_Fs=8000
 ## Raw waveform
@@ -162,8 +154,8 @@ def build_model():
    model.summary()
    return model
 
-X_dir='/home2/data/jyothi/Data/timit_data/wav/'
-Y_dir='/home2/data/jyothi/Data/timit_data/phn/'
+X_dir='./wav/'  ## wav files directory
+Y_dir='./phn/' ## phonetic transcription files directory
 
 Mfccfiles=sorted(os.listdir(X_dir))
 phnf=sorted(os.listdir(Y_dir))
@@ -195,8 +187,6 @@ for fold in range(4): #  no. of folds
                                         subfiles=directory(lsd[i][j])
                                         #print(subfiles)
                                         for k in range(0,len(subfiles)):
-                                                #print("appending: ",X_dir+subfiles[k],j)
-                                                #MFCC_G =np.loadtxt(X_dir+subfiles[k]) 
                                                 sig, sr = librosa.load(X_dir+subfiles[k], sr=Wav_Fs);
                                                 sig = sig/max(abs(sig))
                                                 y = preemphasis(sig)
@@ -218,8 +208,6 @@ for fold in range(4): #  no. of folds
                                         subfiles=directory(lsd[i][j])
                                         #print(subfiles)
                                         for k in range(0,len(subfiles)):
-                                                #print("appending: ",X_dir+subfiles[k])
-                                                #MFCC_G =np.loadtxt(X_dir+subfiles[k]) 
                                                 sig, sr = librosa.load(X_dir+subfiles[k], sr=Wav_Fs);
                                                 sig = sig/max(abs(sig))
                                                 y = preemphasis(sig)
@@ -271,7 +259,7 @@ for fold in range(4): #  no. of folds
         X_train= [x for x in X_train]
         Y_train= [x for x in Y_train]
         X_train=np.array(X_train);Y_train=np.array(Y_train);X_val=np.array(X_val);Y_val=np.array(Y_val);X_test=np.array(X_test);Y_test=np.array(Y_test)
-        fName1 = '/home2/data/jyothi/models/raw_waveform/unseen_timit/'  ###HAVE TO CHANGE
+        fName1 = './unseen_timit/'  # path to save folders
         try:
              os.mkdir(fName1)
         except OSError as error:
